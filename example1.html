@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example 1</title>
+    <style>
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        .tab {
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tab li {
+            cursor: pointer;
+            list-style: none;
+            float: left;
+            width: 100px;
+            border: 1px solid #000;
+            color: blueviolet;
+            text-align: center;
+        }
+
+        .tab li.active {
+            background: orange;
+        }
+
+        .current {
+            width: 306px;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .current>div {
+            display: none;
+
+
+            border: 1px solid red;
+
+        }
+
+        img {
+            width: 100%;
+            height: 100%s;
+        }
+
+        .current>div.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h3>Tab标签</h3>
+        <div class="tab">
+            <ul >
+                <li :class="currentIndex==index? 'active':''" :key="item.id" v-for="(item,index) in showlist"
+                    @click.stop="handleLi(index)">{{item.name}}</li>
+            </ul>
+        </div>
+        <div class="current">
+            <div :class="currentIndex==index? 'active':''" :key="value.id" v-for="(value,index ) in showlist">
+                <p>{{value.cname}}</p>
+                <img :src=value.image :alt=value.cname />
+
+            </div>
+        </div>
+        <h3>v-model*: .number 转为数字, .trim 去前后空格 .lazy 将input事件转change(失去焦点)事件</h3>
+        <div class="form_e">
+            <form action=""></form>
+            <fieldset>
+                <legend> 表单示例绑定 </legend>
+
+                <div>
+                    <span>姓名:</span>
+                    <span><input v-model='uname'></span>
+                </div>
+                <div>
+                    <span>年龄:</span>
+                    <input type="number" v-model.number="age" />
+                </div>
+                <div>
+                    <span>性别:</span>
+                    <span>
+                        <label for="female">女</label>
+                        <input type="radio" name="gender" id="female" value="0" v-model="gender">
+                        <label for="male">男</label>
+                        <input type="radio" name="gender" id="male" value="1" v-model="gender">
+                    </span>
+                </div>
+                <div>
+                    <span>爱好:</span>
+                    <input type="checkbox" name="hobby" id="basketball" value="basketball" v-model="hobby">
+                    <label for="basketball">篮球</label>
+                    <input type="checkbox" name="hobby" id="sing" value="sing" v-model="hobby">
+                    <label for="sing">唱歌</label>
+                    <input type="checkbox" name="hobby" id="dance" value="dance" v-model="hobby">
+                    <label for="dance">跳舞</label>
+                </div>
+                <div>
+                    <span>职业:</span>
+
+                    <select name="occupation" id="" v-model="occupation">
+                        <option value="">请选择您的职业</option>
+                        <option value="教师">教师</option>
+                        <option value="软件工程师">软件工程师</option>
+                        <option value="律师">律师</option>
+                        <option value="工人">工人</option>
+                        <option value="学生">学生</option>
+                    </select>
+                </div>
+                <div>
+                    <span>个人简介:</span>
+                    <textarea name="" v-model.trim="yourself"></textarea>
+                </div>
+                <div>
+                    <input type="submit" value="提交" @click="handleSubmit">
+                </div>
+
+            </fieldset>
+            </form>
+
+
+
+
+        </div>
+    </div>
+
+    <script src='./js/vue.js'></script>
+    <script>
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                currentIndex: 0, //当前选中   
+                showlist: [{
+                    id: "1001",
+                    name: "orange",
+                    cname: "橘子",
+                    image: "http://pic13.nipic.com/20110417/2531170_125252269081_2.jpg"
+                }, {
+                    id: "1002",
+                    name: "apple",
+                    cname: "苹果",
+                    image: "https://www.2008php.com/2011_Website_appreciate/2011-01-20/20110120213718.jpg"
+                }, {
+                    id: "1003",
+                    name: "banala",
+                    cname: "香蕉",
+                    image: "https://i2.chuimg.com/f92455944e16433abf79b2c3f6e4f53c_750w_938h.jpg?imageView2/2/w/600/interlace/1/q/90"
+                }],
+                uname: "",
+                age:"",
+                gender: 1,
+                hobby: ["sing"],
+                occupation: "律师",
+                yourself: "",
+
+            },
+            methods: {
+                handleLi: function (value) {
+                    console.log(value)
+                    this.currentIndex = value
+                },
+                handleSubmit: function () {
+                    console.log(this.occupation, this.yourself)
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>

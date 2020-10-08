@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test1</title>
+    <style>
+        .diva{
+            font-size: 20px;
+            color: red;
+        }
+        .active{
+            width: 100px;
+            height:100px;
+            border: 1px solid #000;
+        }
+        .error{
+            background:orange;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h3>default msg 有闪动</h3>
+        <div>{{msg}}</div>
+        <h3> v-text 纯文本 无闪动</h3>
+        <div v-text="msg"></div>
+        <h3>input的双向绑定 v-model</h3>
+        <h4>input动态值:{{uname}}</h4>
+        <input type="text" v-model="uname" />
+        <dt>Vue的时间绑定</dt>
+        <dd>点击事件:v-on:click----数字+1 :{{num}}</dd>
+        <dd><button v-on:click="num++">点击</button></dd>
+        <dt>在method方法添加事件方法@click='handle'</dt>
+        <dd><input type="button" @click='handle' value="点击2"></dd>
+        <dt>含有参数的传递handle("params",$event)</dt>
+        <dd><button @click='handle(10,$event)'>参数增加</button></dd>
+        <dt>按键修饰符v-on:keyup.enter="funtion"</dt>
+        <dd><input type="num" @keyup.enter="handle($event.target.value)"></dd>
+        <h4>属性绑定</h4>
+        <dt>class的对象属性</dt>
+        <div class="diva" v-bind:class="{active:isActive,error:true}">11</div>
+        <button v-on:click="isActive=!isActive">切换active</button>
+        <dt>class的数组属性</dt>
+        <div class="diva" v-bind:class='[activeClass,"error"]'>12344 </div>
+        <button v-on:click="activeClass==''?activeClass='active':activeClass=''" >切换active</button>
+        <dt>使用对象简化class</dt>
+        <div class="diva" v-bind:class='objClass'>12344 </div>
+        <h4>循环结构</h4>
+        <dt>数组遍历</dt>
+        <ul>
+            <li :key="index" v-for="(item,index) in arrList">{{index +":" +item}}</li>
+        </ul>
+        <dt>对象遍历</dt>
+        <dd v-for="(value,key,index) in objClass">{{ index+"--"+key+"---"+value}}</dd>
+    </div>
+    <script src="js/vue.js"></script>
+    <script>
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                msg: "this is vue msg",
+                uname: "",
+                num: 0,
+                isActive:true,
+                activeClass:"active",
+                objClass:{
+                    active:true,
+                    error:true
+                },
+                arrList:['apple','banala','orange']
+            },
+            methods: {
+                handle: function (a,event) {
+                   a?this.num= this.num+parseInt(a):this.num++
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
