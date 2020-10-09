@@ -6,17 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test1</title>
     <style>
-        .diva{
+        .diva {
             font-size: 20px;
             color: red;
         }
-        .active{
+
+        .active {
             width: 100px;
-            height:100px;
+            height: 100px;
             border: 1px solid #000;
         }
-        .error{
-            background:orange;
+
+        .error {
+            background: orange;
         }
     </style>
 </head>
@@ -45,7 +47,7 @@
         <button v-on:click="isActive=!isActive">切换active</button>
         <dt>class的数组属性</dt>
         <div class="diva" v-bind:class='[activeClass,"error"]'>12344 </div>
-        <button v-on:click="activeClass==''?activeClass='active':activeClass=''" >切换active</button>
+        <button v-on:click="activeClass==''?activeClass='active':activeClass=''">切换active</button>
         <dt>使用对象简化class</dt>
         <div class="diva" v-bind:class='objClass'>12344 </div>
         <h4>循环结构</h4>
@@ -55,6 +57,11 @@
         </ul>
         <dt>对象遍历</dt>
         <dd v-for="(value,key,index) in objClass">{{ index+"--"+key+"---"+value}}</dd>
+        <h3>过滤器 msg | filtersOne |filtersTwo </h3>
+        <p>{{msg | filtersOne |filtersTwo}}</p>
+        <h3>computed 计算属性</h3>
+        <p>computed属性计算的值: {{aginMsg}}</p>
+        <p>再次执行值不会变 依赖vm的变化不变则不变值: {{aginMsg}}</p>
     </div>
     <script src="js/vue.js"></script>
     <script>
@@ -64,19 +71,34 @@
                 msg: "this is vue msg",
                 uname: "",
                 num: 0,
-                isActive:true,
-                activeClass:"active",
-                objClass:{
-                    active:true,
-                    error:true
+                isActive: true,
+                activeClass: "active",
+                objClass: {
+                    active: true,
+                    error: true
                 },
-                arrList:['apple','banala','orange']
+                arrList: ['apple', 'banala', 'orange']
             },
             methods: {
-                handle: function (a,event) {
-                   a?this.num= this.num+parseInt(a):this.num++
+                handle: function (a, event) {
+                    a ? this.num = this.num + parseInt(a) : this.num++
                 }
-            }
+            },
+            filters: {
+                filtersOne: function (value) {
+                    if (!value) return "";
+                    return value + "+ Filter";
+                },
+                filtersTwo:function(value){
+                    if (!value) return "";
+                    return value + "+ Filter2";
+                }
+            },
+            computed: {//依赖缓存的计算属性
+                aginMsg:function(){
+                    return this.msg+" agin";
+                }
+            },
         })
     </script>
 </body>

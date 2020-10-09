@@ -53,6 +53,16 @@
         .current>div.active {
             display: block;
         }
+
+        .table_e table {
+            border: 1px solid saddlebrown;
+        }
+
+        .table_e table td {
+            text-align: center;
+            padding: 15px 25px;
+            border: 1px solid saddlebrown;
+        }
     </style>
 </head>
 
@@ -60,7 +70,7 @@
     <div id="app">
         <h3>Tab标签</h3>
         <div class="tab">
-            <ul >
+            <ul>
                 <li :class="currentIndex==index? 'active':''" :key="item.id" v-for="(item,index) in showlist"
                     @click.stop="handleLi(index)">{{item.name}}</li>
             </ul>
@@ -77,7 +87,6 @@
             <form action=""></form>
             <fieldset>
                 <legend> 表单示例绑定 </legend>
-
                 <div>
                     <span>姓名:</span>
                     <span><input v-model='uname'></span>
@@ -106,7 +115,6 @@
                 </div>
                 <div>
                     <span>职业:</span>
-
                     <select name="occupation" id="" v-model="occupation">
                         <option value="">请选择您的职业</option>
                         <option value="教师">教师</option>
@@ -123,19 +131,53 @@
                 <div>
                     <input type="submit" value="提交" @click="handleSubmit">
                 </div>
-
             </fieldset>
             </form>
-
-
-
-
+        </div>
+        <div class="table_e">
+            <h1>table的快速建立</h1>
+            <table>
+                <thead>
+                    <td>序号</td>
+                    <td>商品名称</td>
+                    <td>商品价格/元</td>
+                    <td>购买数量</td>
+                    <td>操作</td>
+                </thead>
+                <tbody>
+                    <tr :key="item.id" v-for="item in phones">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.price}}</td>
+                        <td><button v-bind:disabled="item.count==0" @click="item.count--">-</button> {{item.count}}
+                            <button @click="item.count++">+</button> </td>
+                        <td><button @click="item.count=0">操作(数量=0)</button></td>
+                    </tr>
+                    <tr>
+                        <td>总价:</td>
+                        <td colspan="4">￥: {{phoneTotal()}} 元</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3>省市2级联动</h3>
+            <span>省份:</span>
+            <select v-model="province">
+                <option value="">请选择省份</option>
+                <option :value="pv" :key="pv.id" v-for="pv in provinces"> {{pv}}</option>
+            </select>
+            <span>城市:</span>
+            <select v-model="city">
+                <option value="">请选择城市</option>
+                <option :value="ct" :key="ct.id" v-for="ct in citys"> {{ct}}</option>
+            </select>
         </div>
     </div>
 
     <script src='./js/vue.js'></script>
     <script>
-        var vue = new Vue({
+        var vm = new Vue({
             el: "#app",
             data: {
                 currentIndex: 0, //当前选中   
@@ -156,11 +198,55 @@
                     image: "https://i2.chuimg.com/f92455944e16433abf79b2c3f6e4f53c_750w_938h.jpg?imageView2/2/w/600/interlace/1/q/90"
                 }],
                 uname: "",
-                age:"",
+                age: "",
                 gender: 1,
                 hobby: ["sing"],
                 occupation: "律师",
                 yourself: "",
+                phones: [{
+                        id: 1,
+                        name: 'iphone 8',
+                        price: 5099,
+                        count: 1
+                    },
+                    {
+                        id: 2,
+                        name: 'iphone xs',
+                        price: 8699,
+                        count: 1
+                    },
+                    {
+                        id: 3,
+                        name: 'iphone xr',
+                        price: 6499,
+                        count: 1
+                    }
+                ],
+                province: "",
+                city: "",
+                provinces: ['广东', '湖南', '湖北', '北京'],
+                citys: [],
+                areas: [{
+                        name: '广东',
+                        id: 1,
+                        child: ['广州', '深圳', '东莞']
+                    },
+                    {
+                        name: '湖南',
+                        id: 2,
+                        child: ['长沙', '株洲', '湘潭']
+                    },
+                    {
+                        name: '湖北',
+                        id: 3,
+                        child: ['武汉','荆州','漳州']
+                    },
+                    {
+                        name: '北京',
+                        id: 4,
+                        child: ['北京市']
+                    }
+                ]
 
             },
             methods: {
@@ -170,6 +256,30 @@
                 },
                 handleSubmit: function () {
                     console.log(this.occupation, this.yourself)
+                },
+                phoneTotal: function () {
+                    let total = 0;
+                    this.phones.forEach(element => {
+                        total += element.price * element.count;
+                    })
+                    return total
+                }
+            },
+            watch: {
+                province: function (newV, oldV) {
+                    console.log(newV, oldV);
+                    if (newV == "") {
+                        this.citys = []
+                    }
+                    if (newV != oldV) {
+                        this.areas.some(ele => {
+                            if (ele.name == newV) {
+                                this.citys = ele.child;
+                                return true;
+                            }
+                        })
+                    }
+                    this.city = "";
                 }
             },
         })
