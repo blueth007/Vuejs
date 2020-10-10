@@ -62,9 +62,69 @@
         <h3>computed 计算属性</h3>
         <p>computed属性计算的值: {{aginMsg}}</p>
         <p>再次执行值不会变 依赖vm的变化不变则不变值: {{aginMsg}}</p>
+        <h3>组件</h3>
+        <Vmcomponent></Vmcomponent>
+        <Subcomponent></Subcomponent>
+        <button-counter @subclick='handleSub'>
+            <p>slot是插槽 插入内部子html</p>
+            <div> 内部子函数的操作通过$emit绑定到父类的操作函数<button @click='handleSub(0)'>点击</button></div>
+        </button-counter>
+        <base-checkbox title="A" name="Mut"></base-checkbox>
+        <base-checkbox title="B" name="Mut"></base-checkbox>
+
+        <base-checkbox v-for="item in arrList" :title="item" name="fruit" @echange="basechange"></base-checkbox>
     </div>
     <script src="js/vue.js"></script>
     <script>
+        Vue.component("Vmcomponent", {
+            template: "<div>example Test </div>"
+        })
+        Vue.component("button-counter", {
+            data: function () {
+                return {
+                    count: 0
+                }
+            },
+            methods: {
+                increament: function () {
+                    this.count++;
+                    this.$emit("subclick", this.count)
+                }
+            },
+            template: "<div> <button @click='increament()'>you click {{count}} </button><slot></slot> </div>"
+        });
+        var Child = {
+            template: '<h1>自定义组件!</h1>'
+        }
+        //表单自定义组件 把input当做普通组件
+        Vue.component('base-checkbox', {
+
+            model: {
+
+                event: 'change' // onchange 事件
+            },
+            props: {
+                checked: {
+                    type: Boolean,
+                    default: false
+                },
+                title: String,
+                name: String
+            },
+            methods: {
+                handlechange: function () {
+                    console.log(event.target.value)
+                    this.$emit('echange', event.target.value)
+                }
+            },
+
+            template: `
+                 <p>
+                   <label > {{title}}:</label>    
+                   <input type="checkbox"     :value='title' :name="name"   v-on:change="handlechange()">
+               </p>
+ `
+        })
         var vue = new Vue({
             el: "#app",
             data: {
@@ -77,11 +137,21 @@
                     active: true,
                     error: true
                 },
+                basecheck: [],
                 arrList: ['apple', 'banala', 'orange']
             },
             methods: {
                 handle: function (a, event) {
                     a ? this.num = this.num + parseInt(a) : this.num++
+                },
+                handleSub: function (val) {
+                    console.log(val)
+                },
+                basechange: function (val) {
+                    console.log("e:", val)
+                    if (this.basecheck.some(a => a == val)) {
+                        this.basecheck=this.basecheck.filter(b=>b!=val)
+                    }else this.basecheck.push(val)
                 }
             },
             filters: {
@@ -89,16 +159,19 @@
                     if (!value) return "";
                     return value + "+ Filter";
                 },
-                filtersTwo:function(value){
+                filtersTwo: function (value) {
                     if (!value) return "";
                     return value + "+ Filter2";
                 }
             },
-            computed: {//依赖缓存的计算属性
-                aginMsg:function(){
-                    return this.msg+" agin";
+            computed: { //依赖缓存的计算属性
+                aginMsg: function () {
+                    return this.msg + " agin";
                 }
             },
+            components: {
+                'Subcomponent': Child
+            }
         })
     </script>
 </body>
